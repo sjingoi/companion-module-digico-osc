@@ -1,7 +1,8 @@
-import { CompanionActionDefinitions } from "@companion-module/base";
+import { CompanionActionDefinitions, CompanionActionEvent, OSCMetaArgument, OSCSomeArguments } from "@companion-module/base";
+import { OSCInstance } from ".";
 
 
-export function getActions(config: any): CompanionActionDefinitions {
+export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 
 	let actions: CompanionActionDefinitions = {};
 	let CHOICES_CHANNELS =[];
@@ -94,7 +95,7 @@ export function getActions(config: any): CompanionActionDefinitions {
 		{ label: 'OFF', id: -150}
 	]
 
-    if(config.series == "S") {
+    if(osci.config.series == "S") {
 
         actions['snapshotS'] = {
             name: 'Fire snapshot S-series',
@@ -117,7 +118,7 @@ export function getActions(config: any): CompanionActionDefinitions {
 
     } else {
 
-        if(config.series == "OSC") {
+        if(osci.config.series == "OSC") {
             actions['fader'] = {
 			name: 'Set fader of channel',
 			options: [
@@ -314,6 +315,236 @@ export function getActions(config: any): CompanionActionDefinitions {
 		}
 
     }
+    // const sendOscMessage = (path: string, args: OSCSomeArguments) => {
+    //     osci.log('debug', `Sending OSC ${osci.config.host}:${osci.config.port} ${path}`)
+    //     osci.log('debug', `Sending Args ${JSON.stringify(args)}`)
+    //     osci.oscSend(osci.config.host, osci.config.port, path, args)
+    // }
+
+    
 
     return actions;
+}
+
+function action(action: CompanionActionEvent, osci: OSCInstance) {
+    let id = action.actionId;
+    let cmd: string = "";
+    let arg: OSCMetaArgument | undefined = undefined;
+    let opt = action.options;
+
+    if(osci.config.series == "IPAD") {
+        switch (id){
+            case 'fader':
+                arg = {
+                    type: "f",
+                    value: opt.fader as number
+                }
+                cmd = `/Input_Channels/${opt.channel}/fader`;
+                break;
+
+            case 'mute':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.mute as string) // Im not sure about this
+                }
+                cmd = `/Input_Channels/${opt.channel}/mute`;
+                break;
+
+            case 'phantom':
+                arg = {
+                    type: "f",
+                    value: parseInt(opt.phantom as string)
+                }
+                cmd = `/Input_Channels/${opt.channel}/Channel_Input/phantom`;
+                break;
+
+            case 'solo':
+                arg = {
+                    type: "f",
+                    value: parseInt(opt.solo as string)
+                }
+                cmd = `/Input_Channels/${opt.channel}/solo`
+                break;
+
+                case 'auxmute':
+                    arg = {
+                        type: "i",
+                        value: parseInt(opt.auxmute as string)
+                    }
+                    cmd = `/Aux_Outputs/${opt.channel}/mute`;
+                    break;
+
+                    case 'cgmute':
+                        arg = {
+                            type: "f",
+                            value: parseInt(opt.cgmute as string)
+                        }
+                        cmd = `/Control_Groups/${opt.channel}/mute`;
+                        break;
+
+                        case 'gomute':
+                            arg = {
+                                type: "i",
+                                value: parseInt(opt.gomute as string)
+                            }
+                            cmd = `/Group_Outputs/${opt.channel}/mute`;
+                            break;
+
+            case 'snapshot':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.snapshot as string)
+                }
+                cmd = '/Snapshots/Fire_Snapshot_number'
+                break;
+
+            case 'snapshotNext':
+                arg = {
+                    type: "i",
+                    value: 0
+                }
+                cmd = '/Snapshots/Fire_Next_Snapshot'
+                break;
+
+            case 'snapshotPrev':
+                arg = {
+                    type: "i",
+                    value: 0
+                }
+                cmd = '/Snapshots/Fire_Prev_Snapshot'
+                break;
+
+            case 'macros':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.macro as string)-1,
+                }
+                cmd = '/Macros/Buttons/press'
+                break;
+        }
+    } else if (osci.config.series == "OSC") {
+        switch (id){
+            case 'fader':
+                arg = {
+                    type: "f",
+                    value: opt.fader as number
+                }
+                cmd = `/sd/Input_Channels/${opt.channel}/fader`;
+                break;
+
+            case 'mute':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.mute as string)
+                }
+                cmd = `/sd/Input_Channels/${opt.channel}/mute`;
+                break;
+
+            case 'phantom':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.phantom as string)
+                }
+                cmd = `/sd/Input_Channels/${opt.channel}/Channel_Input/phantom`;
+                break;
+
+            case 'solo':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.solo as string)
+                }
+                cmd = `/sd/Input_Channels/${opt.channel}/solo`
+                break;
+
+                case 'auxmute':
+                    arg = {
+                        type: "i",
+                        value: parseInt(opt.auxmute as string)
+                    }
+                    cmd = `/Aux_Outputs/${opt.channel}/mute`;
+                    break;
+
+                    case 'cgmute':
+                        arg = {
+                            type: "f",
+                            value: parseInt(opt.cgmute as string)
+                        }
+                        cmd = `/Control_Groups/${opt.channel}/mute`;
+                        break;
+
+                        case 'gomute':
+                            arg = {
+                                type: "i",
+                                value: parseInt(opt.gomute as string)
+                            }
+                            cmd = `/Group_Outputs/${opt.channel}/mute`;
+                            break;
+
+            case 'snapshot':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.snapshot as string)
+                }
+                cmd = '/sd/Snapshots/Fire_Snapshot_number'
+                break;
+
+            case 'snapshotNext':
+                arg = {
+                    type: "i",
+                    value: 0
+                }
+                cmd = '/sd/Snapshots/Fire_Next_Snapshot'
+                break;
+
+            case 'snapshotPrev':
+                arg = {
+                    type: "i",
+                    value: 0
+                }
+                cmd = '/sd/Snapshots/Fire_Prev_Snapshot'
+                break;
+
+            case 'macros':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.macro as string)-1,
+                }
+                cmd = '/sd/Macros/Buttons/press'
+                break;
+        }
+    } else if (osci.config.series == "S") {
+        switch(id) {
+            case 'snapshotS':
+                arg = {
+                    type: "i",
+                    value: parseInt(opt.snapshot as string)
+                }
+                cmd = `/digico/snapshots/fire`;
+                break;
+            case 'snapshotNextS':
+                arg = {
+                    type: "i",
+                    value: 0
+                }
+                cmd = '/digico/snapshots/fire/next'
+                break;
+
+            case 'snapshotPrevS':
+                arg = {
+                    type: "i",
+                    value: 0
+                }
+                cmd = '/digico/snapshots/fire/previous'
+                break;
+        }
+    } else {
+        cmd = '';
+    }
+
+    if (arg !== undefined) {
+        osci.sendOSC(cmd, arg)
+    } else {
+        osci.sendOSC(cmd, [])
+    }
+    
 }
