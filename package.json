@@ -1,6 +1,13 @@
 {
 	"name": "digico-osc",
 	"version": "2.2.0",
+	"product": [
+		"osc support",
+		"SD",
+		"Quantum",
+		"S"
+	],
+	"main": "dist/index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

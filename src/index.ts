@@ -87,7 +87,7 @@ class OSCInstance extends InstanceBase<any> {
 			this.oscSend(this.config.host, this.config.port, path, args)
 		}
 
-		this.setActionDefinitions(getActions())
+		this.setActionDefinitions(getActions(this.config))
 	}
 
 }
