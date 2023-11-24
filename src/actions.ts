@@ -109,12 +109,12 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
                     max: 9999
                 }
             ],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
         }
 
-        actions['snapshotNextS'] = {	name: 'Fire next snapshot S-series', options: [], callback: (action) => {}	}
+        actions['snapshotNextS'] = {	name: 'Fire next snapshot S-series', options: [], callback: (action_event) => { action(action_event, osci) }	}
 
-		actions['snapshotPrevS'] = {	name: 'Fire previous snapshot S-series', options: [], callback: (action) => {}	}
+		actions['snapshotPrevS'] = {	name: 'Fire previous snapshot S-series', options: [], callback: (action_event) => { action(action_event, osci) }	}
 
     } else {
 
@@ -136,7 +136,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 				default: 0.75,
 				choices: CHOICES_FADER
 			}],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
         }
         else {
@@ -157,7 +157,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 				default: 0,
 				choices: CHOICES_FADER_IPAD
 			}],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
         }
         actions['mute'] = {
@@ -177,7 +177,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
                 default: '1',
                 choices: [{label: "on", id: "1"},{label: "off", id: "0"}]
             }],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
         }
 
         actions['auxmute'] = {
@@ -197,7 +197,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 				default: '1',
 				choices: [{label: "on", id: "1"},{label: "off", id: "0"}]
 			}],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
 
         actions['cgmute'] = {
@@ -217,7 +217,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 				default: '1',
 				choices: [{label: "on", id: "1"},{label: "off", id: "0"}]
 			}],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
 
         actions['gomute'] = {
@@ -237,7 +237,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 				default: '1',
 				choices: [{label: "on", id: "1"},{label: "off", id: "0"}]
 			}],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
 
         actions['phantom'] = {
@@ -257,7 +257,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 				default: '1',
 				choices: [{label: "on", id: "1"},{label: "off", id: "0"}]
 			}],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
 
         actions['solo'] = {
@@ -277,7 +277,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 				default: '1',
 				choices: [{label: "on", id: "1"},{label: "off", id: "0"}]
 			}],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
 
         actions['snapshot'] = {
@@ -292,12 +292,12 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 					max: 9999
 				}
 			],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
 
-        actions['snapshotNext'] = {	name: 'Fire next snapshot', options: [], callback: (action) => {} }
+        actions['snapshotNext'] = {	name: 'Fire next snapshot', options: [], callback: (action_event) => { action(action_event, osci) } }
 
-		actions['snapshotPrev'] = {	name: 'Fire previous snapshot', options: [], callback: (action) => {} }
+		actions['snapshotPrev'] = {	name: 'Fire previous snapshot', options: [], callback: (action_event) => { action(action_event, osci) } }
 
 		actions['macros'] = {
 			name: 'Macro',
@@ -311,7 +311,7 @@ export function getActions(osci: OSCInstance): CompanionActionDefinitions {
 					max: 256
 				}
 			],
-            callback: (action) => {}
+            callback: (action_event) => { action(action_event, osci) }
 		}
 
     }
@@ -546,5 +546,5 @@ function action(action: CompanionActionEvent, osci: OSCInstance) {
     } else {
         osci.sendOSC(cmd, [])
     }
-    
+
 }
